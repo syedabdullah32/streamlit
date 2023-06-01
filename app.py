@@ -1,23 +1,18 @@
-from flask import Flask, render_template, request
 import requests
 from bs4 import BeautifulSoup
-
-app = Flask(__name__)
 
 # Set the title for your app
 app_title = "Web Scraper"
 
-@app.route('/')
-def index():
-    return render_template('index.html', title=app_title)
+# Function to get user input
+def get_user_input():
+    url = input("Enter the website URL: ")
+    element_tag = input("Enter the HTML element tag (e.g., h2, p, div): ")
+    element_class = input("Enter the HTML element class (optional, press Enter if none): ")
+    return url, element_tag, element_class
 
-@app.route('/scrape', methods=['POST'])
-def scrape():
-    # Get user input from the form
-    url = request.form['url']
-    element_tag = request.form['element_tag']
-    element_class = request.form['element_class']
-
+# Function to scrape the website
+def scrape_website(url, element_tag, element_class):
     # Send a GET request to the website
     response = requests.get(url)
 
@@ -34,12 +29,28 @@ def scrape():
 
         # Extract the text from the elements
         scraped_data = [element.text.strip() for element in elements]
-
-        # Render the results template with the scraped data
-        return render_template('results.html', scraped_data=scraped_data, title=app_title)
+        return scraped_data
     else:
         error_message = f"Failed to retrieve the webpage. Status code: {response.status_code}"
-        return render_template('error.html', error_message=error_message, title=app_title)
+        print(error_message)
+        return None
 
-if __name__ == '__main__':
-    app.run()
+# Main function
+def main():
+    print(app_title)
+    print("")
+
+    # Get user input
+    url, element_tag, element_class = get_user_input()
+
+    # Scrape the website
+    scraped_data = scrape_website(url, element_tag, element_class)
+
+    # Print the scraped data
+    if scraped_data:
+        print("Scraped Data:")
+        for data in scraped_data:
+            print(data)
+
+if __name__ == "__main__":
+    main()
