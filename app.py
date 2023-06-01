@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 
 # Get user input for the website URL
-url = input("Enter the website URL: ")
+url = input("https://www.google.com/")
 
 # Get user input for the HTML element and class to scrape
 element_tag = input("Enter the HTML element tag (e.g., h2, p, div): ")
