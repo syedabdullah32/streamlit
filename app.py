@@ -4,9 +4,12 @@ from bs4 import BeautifulSoup
 
 app = Flask(__name__)
 
+# Set the title for your app
+app_title = "Web Scraper"
+
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index.html', title=app_title)
 
 @app.route('/scrape', methods=['POST'])
 def scrape():
@@ -33,10 +36,10 @@ def scrape():
         scraped_data = [element.text.strip() for element in elements]
 
         # Render the results template with the scraped data
-        return render_template('results.html', scraped_data=scraped_data)
+        return render_template('results.html', scraped_data=scraped_data, title=app_title)
     else:
         error_message = f"Failed to retrieve the webpage. Status code: {response.status_code}"
-        return render_template('error.html', error_message=error_message)
+        return render_template('error.html', error_message=error_message, title=app_title)
 
 if __name__ == '__main__':
     app.run()
