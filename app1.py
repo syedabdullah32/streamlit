@@ -1,22 +1,31 @@
 import streamlit as st
 import requests
-import re
+from bs4 import BeautifulSoup
 
 def main():
-    st.title(" My Web Scraper")
+    st.title("My Web Scraper")
 
     # Get the URL from the user
-    url = st.text_input("Enter the URL", "https://quotes.toscrape.com/")
+    url = st.text_input("Enter the URL", "https://www.whatmobile.com.pk/")
 
     # Make a GET request to the website
     response = requests.get(url)
 
-    # Extract the links using regular expressions
-    links = re.findall(r'<a\s+href=[\'"]?([^\'" >]+)', response.text)
+    # Parse the HTML content using BeautifulSoup
+    soup = BeautifulSoup(response.content, 'html.parser')
 
-    # Display the extracted links in Streamlit
-    for link in links:
-        st.write(link)
+    # Find all the phone listings on the page
+    phone_listings = soup.find_all('div', class_='item')
+
+    # Extract the name and price for each phone listing
+    for phone in phone_listings:
+        name = phone.find('a', class_='aname').text.strip()
+        price = phone.find('i', class_='price').text.strip()
+
+        # Display the name and price in Streamlit
+        st.write(f"Name: {name}")
+        st.write(f"Price: {price}")
+        st.write('---')  # Add a separator between listings
 
 if __name__ == '__main__':
     main()
