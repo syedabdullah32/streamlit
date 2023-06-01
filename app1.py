@@ -1,5 +1,6 @@
 import streamlit as st
 import requests
+import re
 from bs4 import BeautifulSoup
 
 def main():
@@ -14,18 +15,12 @@ def main():
     # Parse the HTML content using BeautifulSoup
     soup = BeautifulSoup(response.content, 'html.parser')
 
-    # Find all the phone listings on the page
-    phone_listings = soup.find_all('div', class_='item')
+    # Extract the names using regular expressions
+    names = soup.find_all('a', class_='aname')
 
-    # Extract the name and price for each phone listing
-    for phone in phone_listings:
-        name = phone.find('a', class_='aname').text.strip()
-        price = phone.find('i', class_='price').text.strip()
-
-        # Display the name and price in Streamlit
-        st.write(f"Name: {name}")
-        st.write(f"Price: {price}")
-        st.write('---')  # Add a separator between listings
+    # Display the extracted names in Streamlit
+    for name in names:
+        st.write(name.text.strip())
 
 if __name__ == '__main__':
     main()
